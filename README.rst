@@ -1,3 +1,4 @@
+=========
 bienvenue
 =========
 
@@ -8,4 +9,4 @@ legal
 
 Copyright 2017 Scampersand LLC
 
-Released under the [MIT license](https://github.com/scampersand/bienvenue/blob/master/LICENSE)
+Released under the `MIT license <https://github.com/scampersand/bienvenue/blob/master/LICENSE>`_
