@@ -12,7 +12,13 @@ env:
     - COVERAGE_CMD="coverage run --append --source bienvenue,tests -m"
     - COVERAGE_DEP=coverage
 install:
-  - pip install tox tox-travis coveralls
+  # install tox-travis explicitly after tox to avoid
+  # pkg_resources.VersionConflict, see
+  # https://travis-ci.org/scampersand/bienvenue/jobs/196462565
+  # https://github.com/ryanhiebert/tox-travis/issues/26
+  - pip install tox
+  - pip install tox-travis
+  - pip install coveralls
 script:
   - tox
 after_script:
