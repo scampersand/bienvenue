@@ -51,11 +51,11 @@ def test_mixed():
     assert d == {'PREFIX_X': 1, 'Y': 2}
 
 
-def text_mixed_all():
+def test_mixed_all():
     """
     mixed scenario keeping unprefixed keys
     """
     d = {'PREFIX_X': 1, 'Y': 2}
-    d1 = unprefix('PREFIX_', d)
+    d1 = unprefix('PREFIX_', d, all=True)
     assert d1 == {'X': 1, 'Y': 2}
     assert d == {'PREFIX_X': 1, 'Y': 2}
