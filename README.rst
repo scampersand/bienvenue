@@ -70,7 +70,7 @@ error and fall back to the provided default.
 Legal
 -----
 
-Copyright 2017 Scampersand LLC
+Copyright 2017 `Scampersand LLC <https://scampersand.com>`_
 
 Released under the `MIT license <https://github.com/scampersand/bienvenue/blob/master/LICENSE>`_
 
