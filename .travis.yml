@@ -1,11 +1,18 @@
 language: python
-python: 2.7
+python:
+  - "2.7"
+  - "3.3"
+  - "3.4"
+  - "3.5"
+  - "3.6"
+  - "pypy"
+  - "pypy3"
 env:
   global:
     - COVERAGE_CMD="coverage run --append --source bienvenue,tests -m"
     - COVERAGE_DEP=coverage
 install:
-  - pip install tox coveralls
+  - pip install tox tox-travis coveralls
 script:
   - tox
 after_script:
