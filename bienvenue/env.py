@@ -2,12 +2,13 @@ from __future__ import absolute_import, unicode_literals
 
 import logging
 from .decoders import decoders
+from .unprefix import unprefix
 
 
 logger = logging.getLogger(__name__)
 
 
-def env(d, key, default, decoders=decoders):
+def env_get(d, key, default, decoders=decoders):
     """
     Look up ``key`` in ``d`` and decode it, or return ``default``.
     """
@@ -28,6 +29,3 @@ def env(d, key, default, decoders=decoders):
                 return default
     logger.error("no env decoder for %s=%r (default=%r)", key, value, default)
     return default
-
-
-__all__ = ['env']

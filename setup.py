@@ -10,7 +10,7 @@ with open(os.path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='bienvenue',
-    version='1.0.0',
+    version='2.0.0',
     description='Read config from environment for 12 factor apps',
     long_description=long_description,
     url='https://github.com/scampersand/bienvenue',
@@ -32,7 +32,7 @@ setup(
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
     ],
-    keywords='environment environ env'.split(),
+    keywords='django environment environ env'.split(),
     packages=find_packages(exclude=['tests']),
     install_requires=[],
 )

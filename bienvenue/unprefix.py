@@ -2,12 +2,11 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 
 def unprefix(prefix, d, all=False):
-    return dict((_unprefix_key(prefix, k), v) for k, v in d.items()
-                if all or k.startswith(prefix))
-
-
-def _unprefix_key(prefix, k):
-    return k[len(prefix):] if k.startswith(prefix) else k
-
-
-__all__ = ['unprefix']
+    """
+    Returns a new dict by removing ``prefix`` from keys.
+    If ``all`` is ``False`` (default) then drops keys without the prefix,
+    otherwise keeping them.
+    """
+    d1 = dict(d) if all else {}
+    d1.update((k[len(prefix):], v) for k, v in d.items() if k.startswith(prefix))
+    return d1

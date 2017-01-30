@@ -7,7 +7,7 @@ bienvenue
 Python module for reading config from environment for `12-factor apps <https://12factor.net/>`_.
 Supports Python 2.7 and 3.3+
 
-rationale
+Rationale
 ---------
 
 In a 12-factor app, `config comes from the environment <https://12factor.net/config>`_.
@@ -27,7 +27,7 @@ associated environment variable should be converted from string to int.
 
 Sounds like a job for a small and well-tested Python module, right?
 
-installation
+Installation
 ------------
 
 Install from PyPI_:
@@ -36,48 +36,38 @@ Install from PyPI_:
 
     pip install bienvenue
 
-usage
+Usage
 -----
 
-Bienvenue provides two major functions: ``unprefix`` and ``env``. The former is
-a simple filter to remove a common prefix from the keys in a dictionary. The
-latter provides a similar interface as ``os.environ.get``, that is a getter with
-fallback to a default, except that the default is required and provides type
-hinting for decoding the string value.
-
-Here's a snippet for your Django ``settings.py``:
+Bienvenue provides the function ``make_env_reader`` which returns a new
+function for accessing the environment. For example:
 
 .. code:: python
 
-    from functools import partial
-    import os
-    import bienvenue
+    from bienvenue import make_env_reader
 
-    env = partial(bienvenue.env, bienvenue.unprefix('DJANGO_', os.environ))
+    env = make_env_reader(prefix='MY_')
 
-Now environment settings can be extracted as follows:
-
-.. code:: python
-
-    DEBUG = env('DEBUG', True)
+    DEBUG = env('DEBUG', False)
     SECRET_KEY = env('SECRET_KEY', 'fallback-secret-for-dev')
     ALLOWED_HOSTS = env('ALLOWED_HOSTS', [])
 
-In this example, ``DEBUG`` will be extracted from the environment variable
-``DJANGO_DEBUG`` (because of calling ``bienvenue.unprefix`` above) and then
-interpreted as a boolean value, honoring common strings such as on/off,
-true/false, and yes/no.
+The env reader looks for ``MY_DEBUG`` in ``os.environ``. If it's not there,
+the default value ``False`` will be returned. However if it's found, then the
+value there will be interpreted according to the type of the default, in this
+case boolean. Common strings such as on/off, true/false and yes/no are
+interpreted into ``True`` or ``False``.
 
-Likewise ``SECRET_KEY`` will be extracted from ``DJANGO_SECRET_KEY`` and then
+Likewise ``SECRET_KEY`` will be extracted from ``MY_SECRET_KEY`` and then
 interpreted as a string value.
 
-``ALLOWED_HOSTS`` will be extracted from ``DJANGO_ALLOWED_HOSTS`` and JSON
+``ALLOWED_HOSTS`` will be extracted from ``MY_ALLOWED_HOSTS`` and JSON
 decoded as a list, since the default value is a list.
 
 If bienvenue encounters unknown types or values during parsing, it will log an
 error and fall back to the provided default.
 
-legal
+Legal
 -----
 
 Copyright 2017 Scampersand LLC

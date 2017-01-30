@@ -41,6 +41,16 @@ def test_with_prefix():
     assert d == {'PREFIX_X': 1}
 
 
+def test_with_prefix_all():
+    """
+    keys with prefix are unprefixed, original keys are kept
+    """
+    d = {'PREFIX_X': 1}
+    d1 = unprefix('PREFIX_', d, all=True)
+    assert d1 == {'X': 1, 'PREFIX_X': 1}
+    assert d == {'PREFIX_X': 1}
+
+
 def test_mixed():
     """
     mixed scenario dropping unprefixed keys
@@ -57,5 +67,5 @@ def test_mixed_all():
     """
     d = {'PREFIX_X': 1, 'Y': 2}
     d1 = unprefix('PREFIX_', d, all=True)
-    assert d1 == {'X': 1, 'Y': 2}
+    assert d1 == {'X': 1, 'Y': 2, 'PREFIX_X': 1}
     assert d == {'PREFIX_X': 1, 'Y': 2}
