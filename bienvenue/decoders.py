@@ -52,7 +52,7 @@ class EnvDecoder(object):
             return value
         if isinstance(value, string_types):
             return self.from_string(value)
-        raise ValueError("don't know {}".format(type(value)))
+        raise ValueError("don't know {}".format(type(value)))  # pragma: no cover
 
     @abc.abstractmethod
     def from_string(self, s):
@@ -60,7 +60,7 @@ class EnvDecoder(object):
         Decode from string ``s``, or raise an exception on failure.
         Must be overridden by subclass, and don't call super()
         """
-        raise AssertionError("EnvDecoder.from_string shouldn't be called!")
+        raise AssertionError("EnvDecoder.from_string shouldn't be called!")  # pragma: no cover
 
 
 class EnvBool(EnvDecoder):
@@ -89,8 +89,9 @@ class EnvStr(EnvDecoder):
     to_types = string_types
 
     def from_string(self, s):
-        return s
-
+        # never actually called, because EnvDecoder.decode short circuits since
+        # the input type matches the output type.
+        return s  # pragma: no cover
 
 
 class EnvInt(EnvDecoder):
@@ -153,7 +154,7 @@ class EnvNone(EnvDecoder):
         return value
 
     def from_string(self, s):
-        raise AssertionError("EnvNone.from_string shouldn't be called!")
+        raise AssertionError("EnvNone.from_string shouldn't be called!")  # pragma: no cover
 
 
 decoders = [EnvBool(), EnvInt(), EnvList(), EnvDict(), EnvStr(), EnvNone()]
