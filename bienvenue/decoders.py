@@ -1,17 +1,8 @@
-from __future__ import absolute_import, unicode_literals
-
 import abc
 import json
 
 
-# Python 2/3 compatible definitions of string_types.
-try:
-    string_types = (basestring,)
-except NameError:
-    string_types = (str,)
-
-
-class EnvDecoder(object):
+class EnvDecoder:
     """
     Base class for type-specific decoders.
     """
@@ -30,17 +21,17 @@ class EnvDecoder(object):
         Types the decoder handles as input.
         Most decoders handle their output types plus strings.
         """
-        return self.to_types + string_types
+        return self.to_types + (str,)
 
-    def decodes_to_type(self, value):
+    def decodes_to_type(self, type):
         """
-        Test if decoder can decode to type(value)
+        Test if decoder can decode to type
         """
-        return isinstance(value, self.to_types)
+        return type in self.to_types
 
-    def decodes_from_type(self, value):
+    def decodes_from_value(self, value):
         """
-        Test if decoder can decode from type(value)
+        Test if decoder can decode from value
         """
         return isinstance(value, self.from_types)
 
@@ -50,7 +41,7 @@ class EnvDecoder(object):
         """
         if isinstance(value, self.to_types):
             return value
-        if isinstance(value, string_types):
+        if isinstance(value, str):
             return self.from_string(value)
         raise ValueError("don't know {}".format(type(value)))  # pragma: no cover
 
@@ -86,7 +77,7 @@ class EnvStr(EnvDecoder):
     so this is easy.
     """
 
-    to_types = string_types
+    to_types = (str,)
 
     def from_string(self, s):
         # never actually called, because EnvDecoder.decode short circuits since
@@ -112,9 +103,9 @@ class EnvList(EnvDecoder):
 
     to_types = (list,)
 
-    def decodes_from_type(self, value):
+    def decodes_from_value(self, value):
         return isinstance(value, self.to_types) or (
-            isinstance(value, string_types) and
+            isinstance(value, str) and
             value.lstrip().startswith('[')
         )
 
@@ -129,9 +120,9 @@ class EnvDict(EnvDecoder):
 
     to_types = (dict,)
 
-    def decodes_from_type(self, value):
+    def decodes_from_value(self, value):
         return isinstance(value, self.to_types) or (
-            isinstance(value, string_types) and
+            isinstance(value, str) and
             value.lstrip().startswith('{')
         )
 
@@ -144,10 +135,10 @@ class EnvNone(EnvDecoder):
     Decode anything as a pass-through.
     """
 
-    def decodes_to_type(self, value):
-        return value is None
+    def decodes_to_type(self, type):
+        return type is None
 
-    def decodes_from_type(self, value):
+    def decodes_from_value(self, value):
         return True
 
     def decode(self, value):

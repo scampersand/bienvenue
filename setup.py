@@ -1,5 +1,3 @@
-from __future__ import absolute_import, unicode_literals
-
 from setuptools import setup, find_packages
 from codecs import open
 import os
@@ -10,7 +8,7 @@ with open(os.path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='bienvenue',
-    version='2.0.0',
+    version='3.0.0',
     description='Read config from environment for 12 factor apps',
     long_description=long_description,
     url='https://github.com/scampersand/bienvenue',
@@ -24,8 +22,6 @@ setup(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',

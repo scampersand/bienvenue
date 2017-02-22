@@ -1,5 +1,4 @@
-from __future__ import absolute_import, unicode_literals
-
+import pytest
 from bienvenue.env import env_get
 
 
@@ -27,26 +26,31 @@ def test_bool_bool():
     assert env_get({'X': True}, 'X', False) == True
 
 
-def test_bool_missing(caplog):
+def test_bool_type():
+    """
+    bool type as default implies required
+    """
+    assert env_get({'X': 'no'}, 'X', bool) == False
+    assert env_get({'X': 'yes'}, 'X', bool) == True
+    with pytest.raises(KeyError):
+        env_get({}, 'X', bool)
+
+
+def test_bool_missing():
     """
     missing key falls back to default value
     """
     assert env_get({}, 'X', False) == False
     assert env_get({}, 'X', True) == True
-    assert len(caplog.records()) == 0
 
 
-def test_bool_unknown(caplog):
+def test_bool_unknown():
     """
-    unknown values fall back to default, after logging an error
+    unknown values raise an exception
     """
-    assert len(caplog.records()) == 0
     for index, value in enumerate(['', '2', 'huh?', None], 1):
-        assert env_get({'X': value}, 'X', False) == False
-        assert len(caplog.records()) == (index - 1) * 2 + 1
-        assert env_get({'X': value}, 'X', True) == True
-        assert len(caplog.records()) == index * 2
-    assert all(r.levelname == 'ERROR' for r in caplog.records())
+        with pytest.raises(ValueError):
+            env_get({'X': value}, 'X', False)
 
 
 def test_int():
@@ -65,24 +69,32 @@ def test_int_int():
     assert env_get({'X': 42}, 'X', 1) == 42
 
 
-def test_int_default(caplog):
+def test_int_type():
+    """
+    int type as default implies required
+    """
+    assert env_get({'X': '42'}, 'X', int) == 42
+    with pytest.raises(KeyError):
+        env_get({}, 'X', int)
+
+
+def test_int_default():
     """
     missing key falls back to default value
     """
     assert env_get({}, 'X', 42) == 42
-    assert len(caplog.records()) == 0
 
 
-def test_int_unknown(caplog):
+def test_int_unknown():
     """
-    unknown values fall back to default, after logging an error
+    unknown values raise exceptions
     """
-    assert len(caplog.records()) == 0
-    assert env_get({'X': ''}, 'X', 42) == 42
-    assert env_get({'X': 'whoops'}, 'X', 42) == 42
-    assert env_get({'X': None}, 'X', 42) == 42
-    assert len(caplog.records()) == 3
-    assert all(r.levelname == 'ERROR' for r in caplog.records())
+    with pytest.raises(ValueError):
+        env_get({'X': ''}, 'X', 42)
+    with pytest.raises(ValueError):
+        env_get({'X': 'whoops'}, 'X', 42)
+    with pytest.raises(ValueError):
+        env_get({'X': None}, 'X', 42)
 
 
 def test_list():
@@ -99,27 +111,36 @@ def test_list_list():
     assert env_get({'X': [1]}, 'X', []) == [1]
 
 
-def test_list_default(caplog):
+def test_list_type():
+    """
+    list type as default implies required
+    """
+    assert env_get({'X': '[1]'}, 'X', list) == [1]
+    with pytest.raises(KeyError):
+        env_get({}, 'X', list)
+
+
+def test_list_default():
     """
     missing key falls back to default value
     """
     assert env_get({}, 'X', [1]) == [1]
-    assert len(caplog.records()) == 0
 
 
-def test_list_unknown(caplog):
+def test_list_unknown():
     """
-    unknown values and JSON failures fall back to default,
-    after logging an error
+    unknown values and JSON failures raise exceptions
     """
-    assert len(caplog.records()) == 0
-    assert env_get({'X': ''}, 'X', [1]) == [1]
-    assert env_get({'X': 'whoops'}, 'X', [1]) == [1]
-    assert env_get({'X': '[whoops]'}, 'X', [1]) == [1]
-    assert env_get({'X': '{"foo": 1}'}, 'X', [1]) == [1]
-    assert env_get({'X': {"foo": 1}}, 'X', [1]) == [1]
-    assert len(caplog.records()) == 5
-    assert all(r.levelname == 'ERROR' for r in caplog.records())
+    with pytest.raises(ValueError):
+        env_get({'X': ''}, 'X', [1])
+    with pytest.raises(ValueError):
+        env_get({'X': 'whoops'}, 'X', [1])
+    with pytest.raises(ValueError):  # json.JSONDecodeError
+        env_get({'X': '[whoops]'}, 'X', [1])
+    with pytest.raises(ValueError):
+        env_get({'X': '{"foo": 1}'}, 'X', [1])
+    with pytest.raises(ValueError):
+        env_get({'X': {"foo": 1}}, 'X', [1])
 
 
 def test_dict():
@@ -136,27 +157,36 @@ def test_dict_dict():
     assert env_get({'X': {"foo": 1}}, 'X', {}) == {"foo": 1}
 
 
-def test_dict_default(caplog):
+def test_dict_type():
+    """
+    dict type as default implies required
+    """
+    assert env_get({'X': '{"foo": 1}'}, 'X', dict) == {"foo": 1}
+    with pytest.raises(KeyError):
+        env_get({}, 'X', dict)
+
+
+def test_dict_default():
     """
     missing key falls back to default value
     """
     assert env_get({}, 'X', {"foo": 1}) == {"foo": 1}
-    assert len(caplog.records()) == 0
 
 
-def test_dict_unknown(caplog):
+def test_dict_unknown():
     """
-    unknown values and JSON failures fall back to default,
-    after logging an error
+    unknown values and JSON failures raise exceptions
     """
-    assert len(caplog.records()) == 0
-    assert env_get({'X': ''}, 'X', {"foo": 1}) == {"foo": 1}
-    assert env_get({'X': 'whoops'}, 'X', {"foo": 1}) == {"foo": 1}
-    assert env_get({'X': '{1}'}, 'X', {"foo": 1}) == {"foo": 1}
-    assert env_get({'X': '[1]'}, 'X', {"foo": 1}) == {"foo": 1}
-    assert env_get({'X': [1]}, 'X', {"foo": 1}) == {"foo": 1}
-    assert len(caplog.records()) == 5
-    assert all(r.levelname == 'ERROR' for r in caplog.records())
+    with pytest.raises(ValueError):
+        env_get({'X': ''}, 'X', {"foo": 1})
+    with pytest.raises(ValueError):
+        env_get({'X': 'whoops'}, 'X', {"foo": 1})
+    with pytest.raises(ValueError):  # json.JSONDecodeError
+        env_get({'X': '{1}'}, 'X', {"foo": 1})
+    with pytest.raises(ValueError):
+        env_get({'X': '[1]'}, 'X', {"foo": 1})
+    with pytest.raises(ValueError):
+        env_get({'X': [1]}, 'X', {"foo": 1})
 
 
 def test_none():
@@ -167,13 +197,36 @@ def test_none():
     assert env_get({'X': o}, 'X', None) is o
 
 
-def test_unknown_type(caplog):
+def test_unknown_value():
     """
-    unknown type can't be converted (except with default=None) and logs an
-    error
+    value with unknown type can't be converted
     """
-    assert len(caplog.records()) == 0
     o = object()
-    assert env_get({'X': o}, 'X', 42) == 42
-    assert len(caplog.records()) == 1
-    assert all(r.levelname == 'ERROR' for r in caplog.records())
+    with pytest.raises(ValueError):
+        env_get({'X': o}, 'X', 42)
+
+
+def test_unknown_default():
+    """
+    default with unknown type can't be converted
+    """
+    o = object()
+    with pytest.raises(ValueError):
+        env_get({'X': '1'}, 'X', o)
+
+
+def test_unknown_default_type():
+    """
+    default of unknown type can't be converted
+    """
+    with pytest.raises(ValueError):
+        env_get({'X': '1'}, 'X', object)
+
+
+def test_required():
+    """
+    required=True raises KeyError
+    """
+    assert env_get({'X': 1}, 'X', 0, required=True) == 1
+    with pytest.raises(KeyError):
+        env_get({}, 'X', 1, required=True)

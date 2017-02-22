@@ -5,7 +5,7 @@ bienvenue
 |PyPI| |Build Status| |Coverage Report|
 
 Python module for reading config from environment for `12-factor apps <https://12factor.net/>`_.
-Supports Python 2.7 and 3.3+
+Supports Python 3.3+
 
 Rationale
 ---------

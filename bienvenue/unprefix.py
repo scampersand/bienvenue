@@ -1,6 +1,3 @@
-from __future__ import absolute_import, print_function, unicode_literals
-
-
 def unprefix(prefix, d, all=False):
     """
     Returns a new dict by removing ``prefix`` from keys.
