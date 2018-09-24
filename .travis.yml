@@ -1,14 +1,24 @@
 language: python
+
 python:
-  - "3.3"
   - "3.4"
   - "3.5"
   - "3.6"
-  - "pypy3"
+  - "pypy3.5"
+
+# Enable 3.7 without globally enabling sudo and dist: xenial for other build jobs
+# https://github.com/travis-ci/travis-ci/issues/9815
+matrix:
+  include:
+    - python: 3.7
+      dist: xenial
+      sudo: true
+
 env:
   global:
     - COVERAGE_CMD="coverage run --append --source bienvenue,tests -m"
     - COVERAGE_DEP=coverage
+
 install:
   # install tox-travis explicitly after tox to avoid
   # pkg_resources.VersionConflict, see
@@ -17,7 +27,9 @@ install:
   - pip install tox
   - pip install tox-travis
   - pip install codecov
+
 script:
   - tox
+
 after_script:
   - codecov
