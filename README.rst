@@ -2,7 +2,7 @@
 bienvenue
 =========
 
-|PyPI| |Build Status| |Coverage Report|
+|PyPI| |Build Status| |Coverage Report| |Python Versions|
 
 Python module for reading config from environment for `12-factor apps <https://12factor.net/>`_.
 Supports Python 3.4+
@@ -83,4 +83,7 @@ Released under the `MIT license <https://github.com/scampersand/bienvenue/blob/m
    :target: https://codecov.io/gh/scampersand/bienvenue/branch/master
 
 .. |PyPI| image:: https://img.shields.io/pypi/v/bienvenue.svg?style=plastic
+   :target: PyPI_
+
+.. |Python Versions| image:: https://img.shields.io/pypi/pyversions/bienvenue.svg?style=plastic
    :target: PyPI_
